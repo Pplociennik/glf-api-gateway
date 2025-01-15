@@ -4,8 +4,14 @@ server:
 spring:
   application:
     name: "api-gateway"
-  profiles:
-    active: "@spring.profiles.active@"
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
 
 management:
   endpoints:
