@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>com.goaleaf</groupId>
-    <artifactId>api-gateway</artifactId>
+    <artifactId>glf-api-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>api-gateway</name>
+    <name>glf-api-gateway</name>
     <description>API Gateway for Goaleaf project.</description>
 
     <properties>
