@@ -32,26 +32,30 @@ class RoutesConfiguration {
      * Configuration for the Accounts service route.
      * Routes requests from /glf-accounts/** to the GLF-ACCOUNTS service.
      * Applies a rewrite path filter and a default circuit breaker configuration.
+     * Applies a default retry configuration.
      */
     private static final Function< PredicateSpec, Buildable< Route > > ACCOUNTS_SERVICE_ROUTE_CONFIGURATION =
             path -> path.path( RoutesConfigurationDetails.Accounts.ACCOUNTS_SERVICE_PATH )
                     .filters(
                             filter -> filter
                                     .rewritePath( RoutesConfigurationDetails.Accounts.ACCOUNTS_SERVICE_REWRITE_REGEX, RoutesConfigurationDetails.Accounts.ACCOUNTS_SERVICE_REWRITE_REPLACEMENT )
-                                    .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG ) )
+                                    .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG )
+                                    .retry( RoutesConfigurationDetails.DEFAULT_RETRY_CONFIG ) )
                     .uri( "lb://GLF-ACCOUNTS" );
 
     /**
      * Configuration for the Communities service route.
      * Routes requests from /glf-communities/** to the GLF-COMMUNITIES service.
      * Applies a rewrite path filter and a default circuit breaker configuration.
+     * Applies a default retry configuration.
      */
     private static final Function< PredicateSpec, Buildable< Route > > COMMUNITIES_SERVICE_ROUTE_CONFIGURATION =
             path -> path.path( RoutesConfigurationDetails.Communities.COMMUNITIES_SERVICE_PATH )
                     .filters(
                             filter -> filter
                                     .rewritePath( RoutesConfigurationDetails.Communities.COMMUNITIES_SERVICE_REWRITE_REGEX, RoutesConfigurationDetails.Communities.COMMUNITIES_SERVICE_REWRITE_REPLACEMENT )
-                                    .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG ) )
+                                    .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG )
+                                    .retry( RoutesConfigurationDetails.DEFAULT_RETRY_CONFIG ) )
                     .uri( "lb://GLF-COMMUNITIES" );
 
     /**

@@ -1,7 +1,10 @@
 package com.goaleaf.gateway.app;
 
+import org.springframework.cloud.gateway.filter.factory.RetryGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.SpringCloudCircuitBreakerFilterFactory;
+import org.springframework.http.HttpMethod;
 
+import java.time.Duration;
 import java.util.function.Consumer;
 
 /**
@@ -12,6 +15,10 @@ import java.util.function.Consumer;
  * Date: 17.09.2024
  */
 class RoutesConfigurationDetails {
+
+//    ####################################################################################################################
+//    Consumers for circuit breaker configurations
+//    ####################################################################################################################
 
     /**
      * Default circuit breaker configuration.
@@ -36,6 +43,22 @@ class RoutesConfigurationDetails {
     static final Consumer< SpringCloudCircuitBreakerFilterFactory.Config > COMMUNITIES_CIRCUIT_BREAKER_CONFIG = config -> config
             .setName( "communitiesBreaker" )
             .setFallbackUri( "forward:/fallback/contactSupport" );
+
+//    ####################################################################################################################
+//    Consumers for retry pattern configurations
+//    ####################################################################################################################
+
+    /**
+     * Default retry configuration.
+     */
+    static final Consumer< RetryGatewayFilterFactory.RetryConfig > DEFAULT_RETRY_CONFIG = config -> config
+            .setRetries( 3 )
+            .setMethods( HttpMethod.GET )
+            .setBackoff( Duration.ofMillis( 100 ), Duration.ofMillis( 1000 ), 2, true );
+
+//    ####################################################################################################################
+//    Constants for service paths and rewrite configurations
+//    ####################################################################################################################
 
     static class Accounts {
         /**
