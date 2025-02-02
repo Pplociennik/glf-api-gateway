@@ -1,0 +1,31 @@
+package com.goaleaf.gateway.app;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+
+/**
+ * A configuration class for Eureka client.
+ *
+ * @author Created by: Pplociennik at 02.02.2025 16:27
+ */
+@Configuration
+public class EurekaClientConfig {
+
+    public static final String EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE_PROPERTY = "eureka.client.serviceUrl.defaultZone";
+    private final Environment environment;
+
+    @Autowired
+    public EurekaClientConfig( Environment environment ) {
+        this.environment = environment;
+    }
+
+    @Bean
+    public EurekaClientConfigBean eurekaClientConfigBean() {
+        EurekaClientConfigBean config = new EurekaClientConfigBean();
+        config.getServiceUrl().put( "defaultZone", environment.getProperty( EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE_PROPERTY ) );
+        return config;
+    }
+}
