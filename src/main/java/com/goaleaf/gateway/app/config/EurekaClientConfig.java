@@ -1,4 +1,4 @@
-package com.goaleaf.gateway.app;
+package com.goaleaf.gateway.app.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
