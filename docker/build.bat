@@ -1,0 +1,1 @@
+docker build -f docker/Dockerfile . --no-cache --tag com.goaleaf/glf-api-gateway:0.0.1-SNAPSHOT
