@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
@@ -39,15 +40,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(
-            ServerHttpSecurity http,
-            JwtAuthenticationConverter getJwtAuthenticationConverter ) {
+            ServerHttpSecurity http ) {
         http
                 .authorizeExchange( exchanges -> exchanges
                         .pathMatchers( HttpMethod.GET )
                         .permitAll()
-                        .pathMatchers( "/accounts/**" )
+                        .pathMatchers( "/glf-accounts/**" )
                         .authenticated()
-                        .pathMatchers( "/communities/**" )
+                        .pathMatchers( "/glf-communities/**" )
                         .authenticated() )
                 .oauth2ResourceServer( oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec.jwt(
                         aJwtSpec -> aJwtSpec.jwtAuthenticationConverter( grantedAuthoritiesExtractor() ) ) );
@@ -64,4 +64,18 @@ public class SecurityConfig {
 
         return new ReactiveJwtAuthenticationConverterAdapter( jwtAuthenticationConverter );
     }
+
+//    @Bean
+//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+//        // Custom implementation if needed
+//        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+//        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+//        grantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+//
+//        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+//
+//        return jwtAuthenticationConverter;
+//    }
+
 }
