@@ -41,7 +41,7 @@ class RoutesConfiguration {
                                     .rewritePath( RoutesConfigurationDetails.Accounts.ACCOUNTS_SERVICE_REWRITE_REGEX, RoutesConfigurationDetails.Accounts.ACCOUNTS_SERVICE_REWRITE_REPLACEMENT )
                                     .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG )
                                     .retry( RoutesConfigurationDetails.DEFAULT_RETRY_CONFIG ) )
-                    .uri( "lb://GLF-ACCOUNTS" );
+                    .uri( "lb://ACCOUNTS" );
 
     /**
      * Configuration for the Communities service route.
@@ -56,7 +56,7 @@ class RoutesConfiguration {
                                     .rewritePath( RoutesConfigurationDetails.Communities.COMMUNITIES_SERVICE_REWRITE_REGEX, RoutesConfigurationDetails.Communities.COMMUNITIES_SERVICE_REWRITE_REPLACEMENT )
                                     .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG )
                                     .retry( RoutesConfigurationDetails.DEFAULT_RETRY_CONFIG ) )
-                    .uri( "lb://GLF-COMMUNITIES" );
+                    .uri( "lb://COMMUNITIES" );
 
     /**
      * Defines custom routes for the Goaleaf application.
