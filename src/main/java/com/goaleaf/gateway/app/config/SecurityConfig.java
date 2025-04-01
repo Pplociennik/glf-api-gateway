@@ -5,13 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
@@ -32,23 +30,15 @@ public class SecurityConfig {
         this.environment = environment;
     }
 
-//    @Bean
-//    public JwtDecoder jwtDecoder() {
-//        String jwkUri = environment.getProperty( "spring.security.oauth2.resourceserver.jwt.jwk-set-uri" );
-//        return NimbusJwtDecoder.withJwkSetUri( jwkUri ).build();
-//    }
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(
             ServerHttpSecurity http ) {
         http
                 .authorizeExchange( exchanges -> exchanges
-                        .pathMatchers( HttpMethod.GET )
-                        .permitAll()
                         .pathMatchers( "/glf-accounts/**" )
-                        .authenticated()
+                        .hasRole( "ACCOUNTS" )
                         .pathMatchers( "/glf-communities/**" )
-                        .authenticated() )
+                        .hasRole( "COMMUNITIES" ) )
                 .oauth2ResourceServer( oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec.jwt(
                         aJwtSpec -> aJwtSpec.jwtAuthenticationConverter( grantedAuthoritiesExtractor() ) ) );
 

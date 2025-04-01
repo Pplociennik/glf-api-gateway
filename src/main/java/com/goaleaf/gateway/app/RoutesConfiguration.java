@@ -7,7 +7,11 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.util.function.Function;
 
 import static com.goaleaf.gateway.app.RoutesConfigurationDetails.DEFAULT_CIRCUIT_BREAKER_CONFIG;
@@ -17,8 +21,8 @@ import static com.goaleaf.gateway.app.RoutesConfigurationDetails.DEFAULT_CIRCUIT
  * This class uses Spring Cloud Gateway to route requests to different services.
  * <p>
  * Routes defined:
- * - /goaleaf/accounts/** -> lb://ACCOUNTS
- * - /goaleaf/communities/** -> lb://COMMUNITIES
+ * - /goaleaf/glf-accounts/** -> lb://ACCOUNTS
+ * - /goaleaf/glf-communities/** -> lb://COMMUNITIES
  * <p>
  * The routes use load balancing to distribute requests across instances of the services.
  * <p>
@@ -39,9 +43,10 @@ class RoutesConfiguration {
                     .filters(
                             filter -> filter
                                     .rewritePath( RoutesConfigurationDetails.Accounts.ACCOUNTS_SERVICE_REWRITE_REGEX, RoutesConfigurationDetails.Accounts.ACCOUNTS_SERVICE_REWRITE_REPLACEMENT )
-                                    .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG )
-                                    .retry( RoutesConfigurationDetails.DEFAULT_RETRY_CONFIG ) )
-                    .uri( "lb://ACCOUNTS" );
+//                                    .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG )
+//                                    .retry( RoutesConfigurationDetails.DEFAULT_RETRY_CONFIG )
+                    )
+                    .uri( "lb://GLF-ACCOUNTS" );
 
     /**
      * Configuration for the Communities service route.
@@ -56,7 +61,7 @@ class RoutesConfiguration {
                                     .rewritePath( RoutesConfigurationDetails.Communities.COMMUNITIES_SERVICE_REWRITE_REGEX, RoutesConfigurationDetails.Communities.COMMUNITIES_SERVICE_REWRITE_REPLACEMENT )
                                     .circuitBreaker( DEFAULT_CIRCUIT_BREAKER_CONFIG )
                                     .retry( RoutesConfigurationDetails.DEFAULT_RETRY_CONFIG ) )
-                    .uri( "lb://COMMUNITIES" );
+                    .uri( "lb://GLF-COMMUNITIES" );
 
     /**
      * Defines custom routes for the Goaleaf application.
@@ -72,4 +77,15 @@ class RoutesConfiguration {
                 .route( COMMUNITIES_SERVICE_ROUTE_CONFIGURATION )
                 .build();
     }
+
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder()
+                .clientConnector( new ReactorClientHttpConnector(
+                        HttpClient.create()
+                                .responseTimeout( Duration.ofSeconds( 10 ) )
+                ) );
+    }
+
+
 }

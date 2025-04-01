@@ -26,7 +26,8 @@ class RoutesConfigurationDetails {
      */
     static final Consumer< SpringCloudCircuitBreakerFilterFactory.Config > DEFAULT_CIRCUIT_BREAKER_CONFIG = config -> config
             .setName( "glfBreaker" )
-            .setFallbackUri( "forward:/fallback/contactSupport" );
+            .setFallbackUri( "forward://fallback/contactSupport" );
+
 
     /**
      * Circuit breaker configuration for the Accounts service.
