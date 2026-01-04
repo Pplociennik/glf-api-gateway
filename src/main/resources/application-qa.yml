@@ -8,10 +8,12 @@ spring:
     import: "optional:configserver:http://configserver:8071/"
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lowerCaseServiceId: true
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
   security:
     oauth2:
       resourceserver:
@@ -30,10 +32,10 @@ management:
       enabled: true
   endpoint:
     health:
-      enabled: true
       show-details: always
+      access: read_only
     prometheus:
-      enabled: true
+      access: read_only
   metrics:
     tags:
       application: ${spring.application.name}

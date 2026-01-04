@@ -35,6 +35,7 @@ public class SecurityConfig {
             ServerHttpSecurity http ) {
         http
                 .authorizeExchange( exchanges -> exchanges
+                        .pathMatchers( "/actuator/**", "/actuator/health/**" ).permitAll()
                         .pathMatchers( "/glf-accounts/**" )
                         .hasRole( "ACCOUNTS" )
                         .pathMatchers( "/glf-communities/**" )
