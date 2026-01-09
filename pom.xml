@@ -91,6 +91,12 @@
             <version>${version.opentelemetry-javaagent}</version>
             <scope>runtime</scope>
         </dependency>
+        <!--   Others.     -->
+        <dependency>
+            <groupId>com.github.pplociennik</groupId>
+            <artifactId>pp-commons</artifactId>
+            <version>${version.pp-commons}</version>
+        </dependency>
     </dependencies>
 
     <!-- Spring Cloud dependencies -->
