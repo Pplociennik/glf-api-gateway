@@ -66,3 +66,8 @@ logging:
     org.springframework.security: DEBUG
   pattern:
     level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
+
+com:
+  goaleaf:
+    accounts:
+      clientUri: ${COM_GOALEAF_ACCOUNTS_CLIENT_URI}

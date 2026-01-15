@@ -1,8 +1,11 @@
 package com.goaleaf.gateway.app.config;
 
+import com.github.pplociennik.commons.service.SystemPropertiesReaderService;
+import com.github.pplociennik.commons.service.config.CommonBeansConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -12,7 +15,12 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * TODO: Describe this class.
@@ -21,19 +29,24 @@ import reactor.core.publisher.Mono;
  */
 @Configuration
 @EnableWebFluxSecurity
+@Import( value = CommonBeansConfig.class )
 public class SecurityConfig {
 
     private Environment environment;
 
+    private SystemPropertiesReaderService propertyService;
+
     @Autowired
-    public SecurityConfig( Environment environment ) {
+    public SecurityConfig( Environment environment, SystemPropertiesReaderService propertyService ) {
         this.environment = environment;
+        this.propertyService = propertyService;
     }
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(
             ServerHttpSecurity http ) {
         http
+                .cors( customizer -> customizer.configurationSource( corsConfigurationSource() ) )
                 .authorizeExchange( exchanges -> exchanges
                         .pathMatchers( "/actuator/**", "/actuator/health/**" ).permitAll()
                         .pathMatchers( "/glf-accounts/**" )
@@ -54,6 +67,23 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter( new KeycloakRoleConverter() );
 
         return new ReactiveJwtAuthenticationConverterAdapter( jwtAuthenticationConverter );
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        String clientUrlProperty = propertyService.readProperty( "com.goaleaf.accounts.clientUri" );
+        String clientUrl = clientUrlProperty != null && !clientUrlProperty.isBlank() ? clientUrlProperty : "";
+
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins( List.of( clientUrl ) );
+        config.setAllowedMethods( List.of( "GET", "POST", "PUT", "DELETE", "OPTIONS" ) );
+        config.setAllowedHeaders( List.of( "*" ) );
+        config.setAllowCredentials( true );
+        config.setMaxAge( 3600L );
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration( "/**", config );
+        return source;
     }
 
 //    @Bean
