@@ -3,6 +3,7 @@ package com.goaleaf.gateway.app.config;
 import com.github.pplociennik.commons.service.SystemPropertiesReaderService;
 import com.github.pplociennik.commons.service.config.CommonBeansConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -12,6 +13,8 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -32,6 +35,9 @@ import java.util.List;
 @Import( value = CommonBeansConfig.class )
 public class SecurityConfig {
 
+    @Value( "${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}" )
+    private String jwkSetUri;
+
     private Environment environment;
 
     private SystemPropertiesReaderService propertyService;
@@ -40,6 +46,11 @@ public class SecurityConfig {
     public SecurityConfig( Environment environment, SystemPropertiesReaderService propertyService ) {
         this.environment = environment;
         this.propertyService = propertyService;
+    }
+
+    @Bean
+    public ReactiveJwtDecoder reactiveJwtDecoder() {
+        return NimbusReactiveJwtDecoder.withJwkSetUri( jwkSetUri ).build();
     }
 
     @Bean
